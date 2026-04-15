@@ -1,16 +1,15 @@
-# Parse manual args
-$parsed = @{}
-for ($i = 0; $i -lt $args.Count; $i++) {
-    switch ($args[$i]) {
-        '-infile' { $parsed.infile = $args[++$i] }
-        '-outfile' { $parsed.outfile = $args[++$i] }
-        '-addfile' { $parsed.addfile = $args[++$i] }
-    }
-}
+param(
+    [Parameter(Position=0, ValueFromRemainingArguments=$true)]
+    [string[]]$Files,
 
-function multiline_input {
+    [string]$InFile,
+    [string]$OutFile,
+    [string]$AddFile
+)
+
+function Get-MultilineInput {
     $lines = @()
-    Write-Host "Input ('--end' to stop):"
+    Write-Host "Input ('--end' to stop):" -ForegroundColor Cyan
     while ($true) {
         $line = Read-Host
         if ($line -ieq '--end') { break }
@@ -19,49 +18,68 @@ function multiline_input {
     return $lines
 }
 
+# Case 1: Standard Cat behavior (Print files)
+if ($Files -and -not $InFile -and -not $OutFile -and -not $AddFile) {
+    foreach ($file in $Files) {
+        if (Test-Path $file) {
+            Get-Content $file
+        } else {
+            Write-Host "cat: $file: No such file or directory" -ForegroundColor Red
+        }
+    }
+    exit
+}
+
 # Conflict check
-if ($parsed.infile -and $parsed.addfile) {
-    Write-Host "Error: Cannot use both -infile and -addfile at the same time." -ForegroundColor Red
+if ($InFile -and $AddFile) {
+    Write-Host "Error: Cannot use both -InFile and -AddFile at the same time." -ForegroundColor Red
     exit
 }
 
-# Case 1: Copy infile to outfile
-if ($parsed.infile -and $parsed.outfile) {
-    if (-not (Test-Path $parsed.infile)) {
-        Write-Host "File $($parsed.infile) not found!"
+# Case 2: Copy InFile to OutFile
+if ($InFile -and $OutFile) {
+    if (-not (Test-Path $InFile)) {
+        Write-Host "File $InFile not found!" -ForegroundColor Red
         exit
     }
-    Get-Content $parsed.infile | Set-Content $parsed.outfile
-    Write-Host "Copied $($parsed.infile) to $($parsed.outfile) successfully."
+    Get-Content $InFile | Set-Content $OutFile
+    Write-Host "Copied $InFile to $OutFile successfully." -ForegroundColor Green
     exit
 }
 
-# Case 2: Multi-line input to infile
-if ($parsed.infile -and -not $parsed.outfile) {
-    $lines = multiline_input
-    $lines | Set-Content $parsed.infile
-    Write-Host "Successfully saved contents in $($parsed.infile)."
+# Case 3: Multi-line input to InFile
+if ($InFile -and -not $OutFile) {
+    $lines = Get-MultilineInput
+    $lines | Set-Content $InFile
+    Write-Host "Successfully saved contents in $InFile." -ForegroundColor Green
     exit
 }
 
-# Case 3: Append input to addfile
-if ($parsed.addfile) {
-    if (-not (Test-Path $parsed.addfile)) {
-        Write-Host "File $($parsed.addfile) not found!"
+# Case 4: Append input to AddFile
+if ($AddFile) {
+    if (-not (Test-Path $AddFile)) {
+        Write-Host "File $AddFile not found!" -ForegroundColor Red
         exit
     }
-    $lines = multiline_input
-    $lines | Add-Content $parsed.addfile
-    Write-Host "Successfully appended to $($parsed.addfile)."
+    $lines = Get-MultilineInput
+    $lines | Add-Content $AddFile
+    Write-Host "Successfully appended to $AddFile." -ForegroundColor Green
     exit
 }
 
-# Case 4: Show contents of outfile
-if ($parsed.outfile -and -not $parsed.infile -and -not $parsed.addfile) {
-    if (-not (Test-Path $parsed.outfile)) {
-        Write-Host "File $($parsed.outfile) not found!"
+# Case 5: Show contents of OutFile (Legacy behavior)
+if ($OutFile -and -not $InFile -and -not $AddFile) {
+    if (-not (Test-Path $OutFile)) {
+        Write-Host "File $OutFile not found!" -ForegroundColor Red
         exit
     }
-    Get-Content $parsed.outfile
+    Get-Content $OutFile
     exit
 }
+
+# Default: If no args, show usage
+Write-Host "Usage:" -ForegroundColor Cyan
+Write-Host "  cat <file1> <file2>          # Print file contents"
+Write-Host "  cat -InFile <f1> -OutFile <f2> # Copy f1 to f2"
+Write-Host "  cat -InFile <f1>             # Write interactive input to f1"
+Write-Host "  cat -AddFile <f1>            # Append interactive input to f1"

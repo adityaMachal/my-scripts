@@ -1,21 +1,67 @@
-# My Script
-*Collection of custom-Micorsoft PowerShell scripts for productivity*
+# My Scripts (Cross-Platform)
+A collection of custom C utilities and PowerShell scripts for productivity on Windows and Linux.
 
-## Intention:
-As you know `ps1` sciprting is meant for automation. Also it includes wide range of integration with different languages. Here I have used `C` language and will use others as per requirements. Thus, motivated me to contniue this tool to build.
+## Project Goal
+To provide lightweight, cross-platform command-line tools that behave consistently across operating systems.
 
-## Features:
-There are some basic features already implemented and upcomming features as I will build and create in future. As of now, only Windows related scriptings are implemented to get things done much faster for windows user.
+## Features
+- **Unified C Utilities:** `mmkdir` and `touch` written in C with platform-specific optimizations and robust error handling.
+- **Self-Healing Scripts:** PowerShell wrappers that automatically detect missing binaries and prompt for compilation.
+- **Enhanced `cat.ps1`:** Supports standard file output and advanced interactive input/copy/append features.
+- **Cross-Platform:** Core utilities work on Windows, Linux, and macOS.
 
-Below are the platform sections (check code for usage):
-### Windows:
-1. `cat` => Lists the items present in the file (status => can be upgraded).
-2. `touch` => Create one or several files at once
-3. `mmkdir` => Create directories/folders
-4. `run` => Include compiling and running of different programming languages, includes `C/C++`, `Python`, `Javascript`, `Go`, `Rust`, `Java` and many more (status=>building).
-...
+## Installation & Setup
 
-### Linux:
-(Currently not working...)
+### 1. Compile the Utilities
+Ensure you have `gcc` installed. Run the appropriate script:
 
-**This Project is open-source but owned by [Peeyush](https://github.com/Peeyush-04)**
+- **Windows (PowerShell):**
+  ```powershell
+  .\compile.ps1
+  ```
+- **Linux/macOS (Bash):**
+  ```bash
+  chmod +x compile.sh
+  ./compile.sh
+  ```
+
+### 2. Add to PATH
+Add the `scripts` folder to your system PATH to run the tools from anywhere.
+
+#### Windows (PowerShell)
+Add this line to your `$PROFILE`:
+```powershell
+$env:Path += ";C:\path\to\my-scripts\scripts"
+```
+
+#### Linux/macOS (Bash/Zsh)
+Add this line to your `.bashrc` or `.zshrc`:
+```bash
+export PATH="$PATH:/path/to/my-scripts/scripts"
+```
+*(Note: On Linux, you may also want to add the `build` directory to your PATH to run the compiled binaries directly.)*
+
+## Usage
+
+### `mmkdir`
+Creates one or more directories.
+```powershell
+mmkdir folder1 folder2 folder3
+```
+
+### `touch`
+Creates or updates one or more files.
+```powershell
+touch file1.txt file2.c
+```
+
+### `cat` (PowerShell)
+```powershell
+cat <file1> <file2>          # Print file contents (Standard)
+cat -InFile <f1> -OutFile <f2> # Copy f1 to f2
+cat -InFile <f1>             # Write interactive input to f1
+cat -AddFile <f1>            # Append interactive input to f1
+```
+
+## License
+Open-source under the MIT License. Owned by [Peeyush](https://github.com/Peeyush-04).
