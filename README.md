@@ -12,11 +12,11 @@ To provide lightweight, cross-platform command-line tools that behave consistent
 
 ## Installation & Setup
 
-### 1. Compile the Utilities
-Ensure you have `gcc` installed. Run the appropriate script:
+### 1. Run the Installer
+Ensure you have **CMake** and **gcc** installed. Run the appropriate installer for your OS:
 
-- **Windows:** `.\compile.ps1`
-- **Linux/macOS:** `./compile.sh`
+- **Windows:** `.\install.ps1`
+- **Linux/macOS:** `./install.sh`
 
 ### 2. Add to PATH
 Add the appropriate scripts folder to your system PATH.
