@@ -33,7 +33,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 function get_multiline_input {
-    echo -e "\e[36mInput ('--end' to stop):\e[0m"
+    echo -e "\e[36mInput ('--end' to stop):\e[0m" >&2
     while true; do
         read -r line
         if [[ "$line" == "--end" ]]; then

@@ -9,20 +9,23 @@ PYTHON=python3
 BUILD_DIR="build"
 SRC_DIR="src"
 
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
 # Read programs from 'programs' file
-if [ ! -f programs ]; then
-    echo "Error: 'programs' file not found."
+if [ ! -f "$SCRIPT_DIR/programs" ]; then
+    echo "Error: 'programs' file not found in $SCRIPT_DIR."
     exit 1
 fi
 
-PROGRAMS=$(grep -v '^\s*$' programs)  # ignore empty lines
+PROGRAMS=$(grep -v '^\s*$' "$SCRIPT_DIR/programs")  # ignore empty lines
 
 # Create build directory
 mkdir -p "$BUILD_DIR"
 
 # Compile/run programs
 for prog in $PROGRAMS; do
-    src="$SRC_DIR/$prog"
+    src="$SCRIPT_DIR/$SRC_DIR/$prog"
 
     if [ ! -f "$src" ]; then
         echo "Skipping $src — file not found"

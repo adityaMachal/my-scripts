@@ -13,13 +13,13 @@ $BUILD_DIR = "build"
 $SRC_DIR = "src"
 
 # Check if programs file exists
-if (-not (Test-Path "programs")) {
+if (-not (Test-Path "$PSScriptRoot/programs")) {
     Write-Host "Error: 'programs' file not found."
     exit 1
 }
 
 # Read programs from 'programs' file, ignore empty lines
-$PROGRAMS = Get-Content "programs" | Where-Object { $_.Trim() -ne "" }
+$PROGRAMS = Get-Content "$PSScriptRoot/programs" | Where-Object { $_.Trim() -ne "" }
 
 # Functions
 function Ensure-BuildDir {
@@ -44,7 +44,7 @@ if ($clean) {
 Ensure-BuildDir
 
 foreach ($prog in $PROGRAMS) {
-    $src = Join-Path $SRC_DIR $prog
+    $src = Join-Path "$PSScriptRoot/$SRC_DIR" $prog
 
     if (-not (Test-Path $src)) {
         Write-Host "Skipping $src — file not found"
