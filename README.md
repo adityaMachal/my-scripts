@@ -16,7 +16,7 @@ To provide lightweight, cross-platform command-line tools that behave consistent
 Ensure you have **CMake** and **gcc** installed. Run the appropriate installer for your OS:
 
 - **Windows:** `.\install.ps1`
-- **Linux/macOS:** `./install.sh`
+- **Linux/macOS:** `./install`
 
 ### 2. Add to PATH
 Add the appropriate scripts folder to your system PATH.

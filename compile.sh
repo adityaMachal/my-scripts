@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Compiler/interpreters
 CC=gcc
